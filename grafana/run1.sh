@@ -2,7 +2,7 @@
 echo 'Starting Grafana...'
 /run.sh "$@" &
 
-GF_API=${GF_API:-http://grafana:3000/api}
+GF_API=${GF_API:-http://localhost:3000/api}
 GF_USER=${GF_SECURITY_ADMIN_USER:-admin}
 GF_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD:-admin}
 
@@ -16,11 +16,11 @@ print_header() {
 wait_for_api() {
   echo -n "Waiting for Grafana API "
 
-  curl -s -f -u $GF_USER:$GF_PASSWORD ${GF_API}/datasources &> /dev/null
+  curl -s -f -u $GF_USER:$GF_PASSWORD ${GF_API}/health &> /dev/null
   while [ $? -ne 0 ]; do
     echo -n "."
     sleep 2
-    curl -s -f -u $GF_USER:$GF_PASSWORD ${GF_API}/datasources &> /dev/null
+    curl -s -f -u $GF_USER:$GF_PASSWORD ${GF_API}/health &> /dev/null
   done
   echo " "
 }

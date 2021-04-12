@@ -6,7 +6,7 @@ services:
        - influxdb:influxdb
      image: grafana/grafana
      build: ./grafana
-     user: "104"
+     user: "472"
      ports:
        - "8857:3000"
      environment:
@@ -17,7 +17,7 @@ services:
        - GF_USERS_ALLOW_ORG_CREATE=false
        - GF_INSTALL_PLUGINS=briangann-datatable-panel
      volumes:
-       - grafana-home:/var/lib/grafana/
+       - grafana:/var/lib/grafana/
        - grafana-conf:/etc/grafana/
      restart: always 
    influxdb:
@@ -44,12 +44,13 @@ services:
        # - SYS_PATH_PREFIX=/rootfs
      restart: always
    docker-dind:
-      image: docker:dind
+      image: docker
       volumes:
         - docker-dind:/usr/local/bin
         - /var/run/docker.sock:/var/run/docker.sock
       container_name: docker-dind
       privileged: true
+      command: ["sleep", "infinity"]
       restart: always
    jenkins:
       image: jenkins/jenkins
@@ -108,9 +109,9 @@ services:
        - ./influxdb-timeshift-proxy/:/influxdb-timeshift-proxy/
      expose:
        - "8989"
-     command: sh -c "npm i -d && npm run start"
+     command: "sh -c \"chown -R node: . && npm i -d && npm run start\""
 volumes:
-    grafana-home:
+    grafana:
     grafana-conf:
     docker-dind:
     jenkins-home:
